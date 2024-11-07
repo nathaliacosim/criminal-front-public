@@ -1,0 +1,171 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}
+
+html,
+body {
+  width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  max-height: 100vh;
+  background-color: #ededed;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.col-1 {
+  align-items: center;
+  width: 30%;
+  height: 100vh;
+}
+
+.imagem-logo {
+  width: 15rem;
+  height: auto;
+}
+
+.login {
+  padding: 160px;
+}
+
+#root {
+  width: 100%;
+  max-height: 100vh;
+  display: flex;
+}
+
+.league-spartan {
+  font-family: "League Spartan", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 38px;
+}
+
+.poppins-light {
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.f-white {
+  color: #ffffff;
+}
+
+.f-dark-blue {
+  color: #050a30;
+}
+
+.f-light-blue {
+  color: #88d3ff;
+}
+
+.b-white {
+  background-color: #ffffff;
+}
+
+.b-dark-blue {
+  background-color: #050a30;
+}
+
+.b-light-blue {
+  background-color: #88d3ff;
+}
+
+.b-panties-blue {
+  background-color: #057dcd;
+}
+
+.b-light-green {
+  background-color: #77b255;
+}
+
+.inputs-login {
+  margin-top: 15px;
+}
+
+.input-login {
+  height: 6vh;
+  width: 80vh;
+  margin-bottom: 1vh;
+  border: 1px;
+  padding: 5px;
+  border-radius: 8px;
+  outline: 0;
+}
+
+.btn-1 {
+  border-style: hidden;
+  font-size: 16px;
+  border-radius: 8px;
+  height: 6vh !important;
+  width: 80vh !important;
+  margin-bottom: 1vh;
+  text-align: center;
+  align-content: center;
+}
+
+.f-underscore {
+  text-decoration: underline;
+}
+
+.inputs-login > h1 {
+  margin-bottom: 50px;
+}
+
+.error-card {
+  background-color: #fffcfc; /* Vermelho clarinho */
+  border: 1px solid #d32f2f; /* Vermelho escuro */
+  color: #d32f2f; /* Vermelho escuro para o texto */
+  padding: 10px;
+  width: 80vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100%;
+}
+
+.justify {
+  padding: 50px;
+}
