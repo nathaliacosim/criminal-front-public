@@ -1,8 +1,9 @@
-// src/pages/CasosCriminais.tsx
 import React, { useEffect, useState } from "react";
-import axios from "../utils/axios"; // Importando a instância do axios
-import { Link } from "react-router-dom";
+import axios from "../utils/axios";
+import { useNavigate } from "react-router-dom";
+import "./Ajustes.css";
 import NavigatorLateral from "../components/NavigatorLateral";
+import Paper from "../components/Paper";
 
 interface Suspeito {
   _id: string;
@@ -21,11 +22,17 @@ interface Detetive {
   especialidade: string;
 }
 
+interface TipoCrime {
+  _id: string;
+  nome: string;
+  descricao: string;
+}
+
 interface CasoCriminal {
   _id: string;
   nomeVitima: string;
   descricaoCrime: string;
-  tipoCrime: string | null;
+  tipoCrime: TipoCrime | null;
   dataAbertura: string;
   dataFechamento: string;
   statusCaso: string;
@@ -37,6 +44,7 @@ interface CasoCriminal {
 function CasosCriminais() {
   const [casos, setCasos] = useState<CasoCriminal[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCasos = async () => {
@@ -55,32 +63,55 @@ function CasosCriminais() {
   }, []);
 
   const handleCadastrarCaso = () => {
-    window.location.href = "/casos-criminais/cadastrar"; // Redireciona para a página de cadastro
+    navigate("/casos-criminais/cadastrar"); // Usando navigate para redirecionamento
   };
 
   return (
-    <div className="fullscreen b-light-blue">
+    <div className="fullbody">
       <NavigatorLateral />
-      <div>
-        <h1>Casos Criminais</h1>
-        <button onClick={handleCadastrarCaso}>Cadastrar Novo Caso</button>
-        {loading ? (
-          <p>Carregando casos...</p>
-        ) : (
-          <div>
-            <h2>Últimos Casos Cadastrados</h2>
-            <ul>
+      <Paper>
+        <div className="left-content">
+          <h2>Casos Criminais</h2>
+          <br />
+          <button
+            className="btn-1 b-dark-orange f-white"
+            onClick={handleCadastrarCaso}
+          >
+            + Caso Criminal
+          </button>
+
+          {loading ? (
+            <p>Carregando casos...</p>
+          ) : (
+            <div className="container-cards">
+
               {casos.map((caso) => (
-                <li key={caso._id}>
-                  <Link to={`/casos-criminais/${caso._id}`}>
-                    {caso.descricaoCrime} - {caso.nomeVitima}
-                  </Link>
-                </li>
+                <div className="quiz-card" key={caso._id}>
+                  <div className="quiz-card-header">
+                    <span className="quiz-card-category">
+                      {caso.tipoCrime ? caso.tipoCrime.nome : "Tipo de crime desconhecido"}
+                    </span>
+                  </div>
+                  <div className="quiz-card-body">
+                    <p className="quiz-card-question subtitle">
+                      <b>Vítima:</b> {caso.nomeVitima}
+                      <br />
+                      <b>Responsável:</b>{" "}
+                      {caso.detetives.map((detetive) => detetive.nome).join(", ")}
+                      <br />
+                      <b>Status:</b> {caso.statusCaso}
+                      <br />
+                      <b>Início:</b> {caso.dataAbertura}
+                    </p>
+                  </div>
+                </div>
               ))}
-            </ul>
-          </div>
-        )}
-      </div>
+
+            </div>
+
+          )}
+        </div>
+      </Paper>
     </div>
   );
 }

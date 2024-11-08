@@ -2,9 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -39,11 +37,6 @@ body {
   background-color: #ededed;
 }
 
-.container {
-  display: flex;
-  flex-direction: row;
-}
-
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -73,16 +66,13 @@ body {
 
 .league-spartan {
   font-family: "League Spartan", sans-serif;
-  font-optical-sizing: auto;
   font-weight: 700;
-  font-style: normal;
   font-size: 38px;
 }
 
 .poppins-light {
   font-family: "Poppins", sans-serif;
   font-weight: 300;
-  font-style: normal;
 }
 
 .f-white {
@@ -117,6 +107,10 @@ body {
   background-color: #77b255;
 }
 
+.b-dark-orange {
+  background-color: #eb4d0f;
+}
+
 .inputs-login {
   margin-top: 15px;
 }
@@ -133,13 +127,13 @@ body {
 
 .btn-1 {
   border-style: hidden;
-  font-size: 16px;
+  font-size: 20px;
   border-radius: 8px;
-  height: 6vh !important;
-  width: 80vh !important;
-  margin-bottom: 1vh;
+  height: 5vh !important;
+  width: 40vh !important;
+  font-weight: bolder;
   text-align: center;
-  align-content: center;
+  margin-bottom: 20px;
 }
 
 .f-underscore {
@@ -168,4 +162,182 @@ body {
 
 .justify {
   padding: 50px;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.subtitle {
+  font-size: 16px !important;
+}
+
+.quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.container-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;  /* Permite que os itens se quebrem para a próxima linha se necessário */
+  gap: 20px;        /* Espaçamento entre os cards */
+}
+
+.quiz-card {
+  width: 300px;     /* Definindo uma largura fixa para os cards */
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.quiz-card-header {
+  text-align: start; /* Ajustado para alinhar o texto à esquerda */
+  margin-bottom: 20px;
+}
+
+.quiz-card-category {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.quiz-card-body {
+  text-align: center;
+}
+
+.quiz-card-question {
+  text-align: start; /* Ajustado para alinhar o texto da pergunta à esquerda */
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Estilos gerais da página */
+.fullbody {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7fc;
+}
+
+/* Estilo do papel (Paper) */
+.Paper {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin: 20px;
+  flex-grow: 1;
+}
+
+/* Estilo do formulário */
+.form {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: 20px 20px 20px 20px;
+  width: 70%;
+}
+
+/* Estilos para cada label */
+label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Estilos dos campos de entrada (input, select, textarea) */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estilo para inputs de tipo date */
+input[type="date"] {
+  cursor: pointer;
+}
+
+/* Efeito quando o campo está em foco */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #e9f7ff;
+}
+
+/* Estilo para textareas */
+textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+/* Estilo para os campos de múltiplas seleções (select múltiplo) */
+select[multiple] {
+  height: 150px;
+  padding: 5px;
+}
+
+/* Estilo do botão de submit */
+button {
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #942a00;
+}
+
+/* Estilo para as opções dentro do select */
+option {
+  padding: 8px;
+  font-weight: normal;
+}
+
+/* Ajustes para os campos de seleção com múltiplas opções */
+select[multiple] option {
+  padding: 10px;
+}
+
+/* Estilo de hover nas opções */
+option:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .fullbody {
+    flex-direction: column;
+  }
+
+  .Paper {
+    margin: 10px;
+  }
+
+  .form {
+    gap: 1.5rem;
+  }
+
+  button {
+    width: 100%;
+  }
 }

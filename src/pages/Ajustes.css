@@ -1,0 +1,12 @@
+.fullbody {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .left-content {
+    margin-left: 10px; /* Largura do menu lateral */
+    padding: 20px;
+    flex-grow: 1;
+  }
+  
+  
