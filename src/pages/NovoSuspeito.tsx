@@ -101,11 +101,9 @@ function NovoSuspeito() {
                 grauSuspeito,
                 casoCriminal: selectedCasoCriminal ? selectedCasoCriminal.value : null
             });
-            alert("Suspeito cadastrado com sucesso!");
             navigate("/suspeitos");
         } catch (error) {
             console.error("Erro ao cadastrar o Suspeito:", error);
-            alert("Erro ao cadastrar o Suspeito. Tente novamente.");
         } finally {
             setLoading(false);
         }

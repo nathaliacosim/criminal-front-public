@@ -68,11 +68,9 @@ function EditarSuspeito() {
                 grauSuspeito: suspeito?.grauSuspeito,
                 casoCriminal: suspeito?.casoCriminal,
             });
-            alert("Suspeito atualizado com sucesso!");
             navigate("/suspeitos");
         } catch (error) {
             console.error("Erro ao atualizar o Suspeito:", error);
-            alert("Erro ao atualizar o Suspeito. Tente novamente.");
         } finally {
             setLoading(false);
         }

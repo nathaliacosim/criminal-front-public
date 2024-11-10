@@ -2,15 +2,17 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import CasosCriminais from "./pages/CasosCriminais";
-import NovoCasoCriminal from "./pages/CadastroCasoCriminal";
+import NovoCasoCriminal from "./pages/NovoCasoCriminal";
 import Suspeitos from "./pages/Suspeitos";
 import Testemunhas from "./pages/Testemunhas";
 import Detetives from "./pages/Detetives";
 import Entrevistas from "./pages/Entrevistas";
 import Evidencias from "./pages/Evidencias";
 import EditarCaso from "./pages/EditarCaso";
-import NovoSuspeito from "./pages/CadastroSuspeitos";
+import NovoSuspeito from "./pages/NovoSuspeito";
 import EditarSuspeito from "./pages/EditarSuspeito";
+import EditarEvidencia from "./pages/EditarEvidencia";
+import NovaEvidencia from "./pages/NovaEvidencia";
 
 function App() {
   return (
@@ -21,12 +23,19 @@ function App() {
           <Route path="/casos-criminais" element={<CasosCriminais />} />
           <Route path="/casos-criminais/cadastrar" element={<NovoCasoCriminal />} />
           <Route path="/casos-criminais/editar/:id" element={<EditarCaso />} />
+
           <Route path="/suspeitos" element={<Suspeitos />} />
           <Route path="/suspeitos/cadastrar" element={<NovoSuspeito />} />
           <Route path="/suspeitos/editar/:id" element={<EditarSuspeito />} />
-          <Route path="/testemunhas" element={<Testemunhas />} />
-          <Route path="/detetives" element={<Detetives />} />
+
           <Route path="/evidencias" element={<Evidencias />} />
+          <Route path="/evidencias/cadastrar" element={<NovaEvidencia />} />
+          <Route path="/evidencias/editar/:id" element={<EditarEvidencia />} />
+
+          <Route path="/testemunhas" element={<Testemunhas />} />
+
+          <Route path="/detetives" element={<Detetives />} />
+
           <Route path="/entrevistas" element={<Entrevistas />} />
         </Routes>
       </BrowserRouter>

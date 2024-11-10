@@ -22,7 +22,6 @@ function NovoCasoCriminal() {
     const [selectedDetetives, setSelectedDetetives] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
 
-    // Carregar a lista de detetives ao iniciar
     useEffect(() => {
         const fetchDetetives = async () => {
             try {
@@ -48,11 +47,9 @@ function NovoCasoCriminal() {
                 statusCaso,
                 detetives: selectedDetetives,
             });
-            alert("Caso criminal cadastrado com sucesso!");
             navigate("/");
         } catch (error) {
             console.error("Erro ao cadastrar o caso:", error);
-            alert("Erro ao cadastrar o caso. Tente novamente.");
         } finally {
             setLoading(false);
         }
