@@ -8,6 +8,7 @@ import Testemunhas from "./pages/Testemunhas";
 import Detetives from "./pages/Detetives";
 import Entrevistas from "./pages/Entrevistas";
 import Evidencias from "./pages/Evidencias";
+import EditarCaso from "./pages/EditarCaso";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<CasosCriminais />} />
           <Route path="/casos-criminais" element={<CasosCriminais />} />
           <Route path="/casos-criminais/cadastrar" element={<NovoCasoCriminal />} />
+          <Route path="/casos-criminais/editar/:id" element={<EditarCaso />} />
           <Route path="/suspeitos" element={<Suspeitos />} />
           <Route path="/testemunhas" element={<Testemunhas />} />
           <Route path="/detetives" element={<Detetives />} />

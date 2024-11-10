@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importa o hook useNavigate
 import axios from "../utils/axios";
 import NavigatorLateral from "../components/NavigatorLateral";
 import Paper from "../components/Paper";
-
-interface Suspeito {
-    _id: string;
-    nome: string;
-    descricao: string;
-}
-
-interface Testemunha {
-    _id: string;
-    nome: string;
-    contato: string;
-}
 
 interface Detetive {
     _id: string;
@@ -21,59 +10,56 @@ interface Detetive {
     especialidade: string;
 }
 
-interface TipoCrime {
-    _id: string;
-    nome: string;
-    descricao: string;
-}
-
 function NovoCasoCriminal() {
+    const navigate = useNavigate(); // Inicializa o hook para navegação
     const [nomeVitima, setNomeVitima] = useState("");
     const [descricaoCrime, setDescricaoCrime] = useState("");
-    const [tipoCrime, setTipoCrime] = useState<string | null>(null);
+    const [tipoCrime, setTipoCrime] = useState("");
     const [dataAbertura, setDataAbertura] = useState("");
+    const [dataFechamento, setDataFechamento] = useState("");
     const [statusCaso, setStatusCaso] = useState("");
-    const [tiposCrime, setTiposCrime] = useState<TipoCrime[]>([]);
-    const [suspeitos, setSuspeitos] = useState<Suspeito[]>([]);
-    const [testemunhas, setTestemunhas] = useState<Testemunha[]>([]);
     const [detetives, setDetetives] = useState<Detetive[]>([]);
-    const [selectedSuspeitos, setSelectedSuspeitos] = useState<string[]>([]);
-    const [selectedTestemunhas, setSelectedTestemunhas] = useState<string[]>([]);
     const [selectedDetetives, setSelectedDetetives] = useState<string[]>([]);
+    const [loading, setLoading] = useState(false);
 
+    // Carregar a lista de detetives ao iniciar
     useEffect(() => {
-        const fetchOptions = async () => {
-            const [tiposResponse, suspeitosResponse, testemunhasResponse, detetivesResponse] = await Promise.all([
-                axios.get("/tipo-crime"),
-                axios.get("/suspeito"),
-                axios.get("/testemunha"),
-                axios.get("/detetive"),
-            ]);
-            setTiposCrime(tiposResponse.data);
-            setSuspeitos(suspeitosResponse.data);
-            setTestemunhas(testemunhasResponse.data);
-            setDetetives(detetivesResponse.data);
+        const fetchDetetives = async () => {
+            try {
+                const detetivesResponse = await axios.get("/detetives");
+                setDetetives(detetivesResponse.data);
+            } catch (error) {
+                console.error("Erro ao buscar os detetives:", error);
+            }
         };
-        fetchOptions();
+        fetchDetetives();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
         try {
             await axios.post("/caso-criminal", {
                 nomeVitima,
                 descricaoCrime,
                 tipoCrime,
                 dataAbertura,
+                dataFechamento: dataFechamento || null,
                 statusCaso,
-                suspeitos: selectedSuspeitos,
-                testemunhas: selectedTestemunhas,
-                detetives: selectedDetetives,
+                detetives: selectedDetetives, // Passando os detetives selecionados
             });
             alert("Caso criminal cadastrado com sucesso!");
+            navigate("/"); // Redireciona para a página inicial
         } catch (error) {
             console.error("Erro ao cadastrar o caso:", error);
+            alert("Erro ao cadastrar o caso. Tente novamente.");
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedDetetives(Array.from(e.target.selectedOptions, (option) => option.value));
     };
 
     return (
@@ -93,13 +79,27 @@ function NovoCasoCriminal() {
 
                     <label>
                         Tipo de Crime: <br />
-                        <select value={tipoCrime || ""} onChange={(e) => setTipoCrime(e.target.value)} required>
-                            <option value="">Selecione</option>
-                            {tiposCrime.map((tipo) => (
-                                <option key={tipo._id} value={tipo._id}>
-                                    <b>{tipo.nome}</b>
-                                </option>
-                            ))}
+                        <select value={tipoCrime} onChange={(e) => setTipoCrime(e.target.value)} required>
+                            <option value="">Selecione o Tipo de Crime</option>
+                            <option value="Roubo">Roubo</option>
+                            <option value="Furto">Furto</option>
+                            <option value="Homicidio">Homicídio</option>
+                            <option value="Estupro">Estupro</option>
+                            <option value="Tráfico de Drogas">Tráfico de Drogas</option>
+                            <option value="Fraude">Fraude</option>
+                            <option value="Sequestro">Sequestro</option>
+                            <option value="Vandalismo">Vandalismo</option>
+                            <option value="Crimes Cibernéticos">Crimes Cibernéticos</option>
+                            <option value="Perseguição (Stalking)">Perseguição (Stalking)</option>
+                            <option value="Assédio Sexual">Assédio Sexual</option>
+                            <option value="Agressão Física">Agressão Física</option>
+                            <option value="Extorsão">Extorsão</option>
+                            <option value="Crimes Ambientais">Crimes Ambientais</option>
+                            <option value="Perjúrio">Perjúrio</option>
+                            <option value="Difamação">Difamação</option>
+                            <option value="Violência Doméstica">Violência Doméstica</option>
+                            <option value="Abandono de Incapaz">Abandono de Incapaz</option>
+                            <option value="Tráfico Humano">Tráfico Humano</option>
                         </select>
                     </label>
 
@@ -109,38 +109,34 @@ function NovoCasoCriminal() {
                     </label>
 
                     <label>
-                        Status do Caso: <br />
-                        <input value={statusCaso} onChange={(e) => setStatusCaso(e.target.value)} required />
+                        Data de Fechamento: <br />
+                        <input type="date" value={dataFechamento} onChange={(e) => setDataFechamento(e.target.value)} />
                     </label>
 
-                    <label>Suspeitos:</label>
-                    <select multiple onChange={(e) => setSelectedSuspeitos(Array.from(e.target.selectedOptions, option => option.value))}>
-                        {suspeitos.map((suspeito) => (
-                            <option key={suspeito._id} value={suspeito._id}>
-                                {suspeito.nome}
-                            </option>
-                        ))}
-                    </select>
-
-                    <label>Testemunhas:</label>
-                    <select multiple onChange={(e) => setSelectedTestemunhas(Array.from(e.target.selectedOptions, option => option.value))}>
-                        {testemunhas.map((testemunha) => (
-                            <option key={testemunha._id} value={testemunha._id}>
-                                {testemunha.nome}
-                            </option>
-                        ))}
-                    </select>
+                    <label>
+                        Status do Caso: <br />
+                        <select value={statusCaso} onChange={(e) => setStatusCaso(e.target.value)} required>
+                            <option value="">Selecione o Status do Caso</option>
+                            <option value="Aberto">Aberto</option>
+                            <option value="Fechado">Fechado</option>
+                            <option value="Em Investigação">Em Investigação</option>
+                            <option value="Arquivado">Arquivado</option>
+                            <option value="Suspenso">Suspenso</option>
+                        </select>
+                    </label>
 
                     <label>Detetives:</label>
-                    <select multiple onChange={(e) => setSelectedDetetives(Array.from(e.target.selectedOptions, option => option.value))}>
+                    <select multiple value={selectedDetetives} onChange={handleSelectChange} required>
                         {detetives.map((detetive) => (
                             <option key={detetive._id} value={detetive._id}>
-                                {detetive.nome}
+                                {detetive.nome} - {detetive.especialidade}
                             </option>
                         ))}
                     </select>
 
-                    <button type="submit">Cadastrar Caso</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Cadastrando..." : "Cadastrar Caso"}
+                    </button>
                 </form>
             </Paper>
         </div>

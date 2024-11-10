@@ -168,6 +168,10 @@ body {
   text-align: left;
 }
 
+.text-small{
+  font-size: 15px;
+}
+
 .form {
   display: flex;
   flex-direction: column;

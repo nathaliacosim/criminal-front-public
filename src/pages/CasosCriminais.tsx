@@ -1,49 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "../utils/axios";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 import "./Ajustes.css";
 import NavigatorLateral from "../components/NavigatorLateral";
 import Paper from "../components/Paper";
+import Modal from "../components/Modal";
+
+interface Detetive {
+  _id: string;
+  nome: string;
+  tipo: string;
+  patente: string;
+  especialidade: string;
+}
 
 interface Suspeito {
   _id: string;
   nome: string;
-  descricao: string;
+  alibi: string;
+  relacaoComVitima: string;
 }
 
 interface Testemunha {
   _id: string;
   nome: string;
+  relacaoComVitima: string;
+  confiabilidade: string;
+  tipoTestemunha: string;
 }
 
-interface Detetive {
+interface Evidencia {
   _id: string;
-  nome: string;
-  especialidade: string;
-}
-
-interface TipoCrime {
-  _id: string;
-  nome: string;
   descricao: string;
+  localizacao: string;
+  tipoEvidencia: string;
+  statusEvidencia: string;
+}
+
+interface Entrevista {
+  _id: string;
+  motivoEntrevista: string;
+  entrevistado: string;
+  dataHoraInicio: string;
+  nomeResponsavel: string;
 }
 
 interface CasoCriminal {
   _id: string;
   nomeVitima: string;
   descricaoCrime: string;
-  tipoCrime: TipoCrime | null;
+  tipoCrime: string;
   dataAbertura: string;
   dataFechamento: string;
   statusCaso: string;
   suspeitos: Suspeito[];
   testemunhas: Testemunha[];
   detetives: Detetive[];
+  evidencias: Evidencia[]; // Adicionada propriedade 'evidencias'
+  entrevistas: Entrevista[]; // Adicionada propriedade 'entrevistas'
 }
 
 function CasosCriminais() {
   const [casos, setCasos] = useState<CasoCriminal[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedCaso, setSelectedCaso] = useState<CasoCriminal | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,13 +80,36 @@ function CasosCriminais() {
         setLoading(false);
       }
     };
-
     fetchCasos();
   }, []);
 
-  const handleCadastrarCaso = () => {
-    navigate("/casos-criminais/cadastrar"); // Usando navigate para redirecionamento
-  };
+  const handleCadastrarCaso = useCallback(() => {
+    navigate("/casos-criminais/cadastrar");
+  }, [navigate]);
+
+  const handleCardClick = useCallback((caso: CasoCriminal) => {
+    setSelectedCaso(caso);
+    setModalOpen(true);
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setModalOpen(false);
+  }, []);
+
+  const handleEdit = useCallback((id: string) => {
+    navigate(`/casos-criminais/editar/${id}`);
+  }, [navigate]);
+
+  const handleDelete = useCallback(async (id: string) => {
+    try {
+      await axios.delete(`/caso-criminal/${id}`);
+      setCasos(prevCasos => prevCasos.filter(caso => caso._id !== id));
+      handleModalClose();
+    } catch (error) {
+      console.error("Erro ao excluir o caso:", error);
+      alert("Erro ao excluir o caso. Tente novamente.");
+    }
+  }, [handleModalClose]);
 
   return (
     <div className="fullbody">
@@ -84,12 +129,15 @@ function CasosCriminais() {
             <p>Carregando casos...</p>
           ) : (
             <div className="container-cards">
-
               {casos.map((caso) => (
-                <div className="quiz-card" key={caso._id}>
+                <div
+                  className="quiz-card"
+                  key={caso._id}
+                  onClick={() => handleCardClick(caso)}
+                >
                   <div className="quiz-card-header">
                     <span className="quiz-card-category">
-                      {caso.tipoCrime ? caso.tipoCrime.nome : "Tipo de crime desconhecido"}
+                      {caso.tipoCrime ? caso.tipoCrime : "Tipo de crime desconhecido"}
                     </span>
                   </div>
                   <div className="quiz-card-body">
@@ -101,17 +149,25 @@ function CasosCriminais() {
                       <br />
                       <b>Status:</b> {caso.statusCaso}
                       <br />
-                      <b>Início:</b> {caso.dataAbertura}
+                      <b>Início:</b> {caso.dataAbertura ? format(new Date(caso.dataAbertura), 'dd/MM/yyyy') : "Data não disponível"}
                     </p>
                   </div>
                 </div>
               ))}
-
             </div>
-
           )}
         </div>
       </Paper>
+
+      {selectedCaso && (
+        <Modal
+          isOpen={modalOpen}
+          caso={selectedCaso}
+          onClose={handleModalClose}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
