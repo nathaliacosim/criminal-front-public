@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importa o hook useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import NavigatorLateral from "../components/NavigatorLateral";
 import Paper from "../components/Paper";
@@ -11,7 +11,7 @@ interface Detetive {
 }
 
 function NovoCasoCriminal() {
-    const navigate = useNavigate(); // Inicializa o hook para navegação
+    const navigate = useNavigate();
     const [nomeVitima, setNomeVitima] = useState("");
     const [descricaoCrime, setDescricaoCrime] = useState("");
     const [tipoCrime, setTipoCrime] = useState("");
@@ -46,10 +46,10 @@ function NovoCasoCriminal() {
                 dataAbertura,
                 dataFechamento: dataFechamento || null,
                 statusCaso,
-                detetives: selectedDetetives, // Passando os detetives selecionados
+                detetives: selectedDetetives,
             });
             alert("Caso criminal cadastrado com sucesso!");
-            navigate("/"); // Redireciona para a página inicial
+            navigate("/");
         } catch (error) {
             console.error("Erro ao cadastrar o caso:", error);
             alert("Erro ao cadastrar o caso. Tente novamente.");

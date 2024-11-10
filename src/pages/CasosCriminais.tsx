@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import "./Ajustes.css";
 import NavigatorLateral from "../components/NavigatorLateral";
 import Paper from "../components/Paper";
-import Modal from "../components/Modal";
+import Modal from "../components/ModalCaso";
 
 interface Detetive {
   _id: string;
@@ -20,6 +20,9 @@ interface Suspeito {
   nome: string;
   alibi: string;
   relacaoComVitima: string;
+  casoCriminal: string;
+  grauSuspeito: string;
+  descricaoFisica: string;
 }
 
 interface Testemunha {
@@ -57,8 +60,8 @@ interface CasoCriminal {
   suspeitos: Suspeito[];
   testemunhas: Testemunha[];
   detetives: Detetive[];
-  evidencias: Evidencia[]; // Adicionada propriedade 'evidencias'
-  entrevistas: Entrevista[]; // Adicionada propriedade 'entrevistas'
+  evidencias: Evidencia[];
+  entrevistas: Entrevista[];
 }
 
 function CasosCriminais() {
