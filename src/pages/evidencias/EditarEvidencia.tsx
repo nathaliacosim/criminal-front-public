@@ -45,7 +45,11 @@ function EditarEvidencia() {
         const fetchEvidencia = async () => {
             try {
                 const response = await axios.get(`/evidencias/${id}`);
-                setEvidencia(response.data);
+
+                const evidenciaData = response.data;                
+                evidenciaData.dataEncontro = new Date(evidenciaData.dataEncontro).toISOString().split("T")[0];
+
+                setEvidencia(evidenciaData);
             } catch (error) {
                 console.error("Erro ao buscar a evidencia:", error);
             }

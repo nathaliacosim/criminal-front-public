@@ -53,8 +53,8 @@ function EditarEntrevista() {
                     localEntrevista: data.localEntrevista,
                     nomeResponsavel: data.nomeResponsavel,
                     ataEntrevista: data.ataEntrevista,
-                    dataHoraInicio: data.dataHoraInicio,
-                    dataHoraFim: data.dataHoraFim
+                    dataHoraInicio: format(new Date(data.dataHoraInicio), "yyyy-MM-dd'T'HH:mm"),
+                    dataHoraFim: format(new Date(data.dataHoraFim), "yyyy-MM-dd'T'HH:mm")
                 });
                 setSelectedCasoCriminal({
                     value: data.casoCriminal._id,

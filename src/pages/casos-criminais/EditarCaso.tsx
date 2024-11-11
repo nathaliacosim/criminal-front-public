@@ -35,7 +35,12 @@ function EditarCaso() {
         const fetchCaso = async () => {
             try {
                 const response = await axios.get<CasoCriminal>(`/caso-criminal/${id}`);
-                setCaso(response.data);
+                
+                const casoData = response.data;                
+                casoData.dataAbertura = new Date(casoData.dataAbertura).toISOString().split("T")[0];
+                casoData.dataFechamento = new Date(casoData.dataFechamento).toISOString().split("T")[0];
+
+                setCaso(casoData);
             } catch (error) {
                 console.error("Erro ao buscar o caso para edição:", error);
             }
@@ -65,6 +70,7 @@ function EditarCaso() {
                 nomeVitima: caso.nomeVitima,
                 descricaoCrime: caso.descricaoCrime,
                 tipoCrime: caso.tipoCrime,
+                dataFechamento: caso.dataFechamento,
                 statusCaso: caso.statusCaso,
                 detetives: caso.detetives.map(detetive => detetive._id),
             };
@@ -111,6 +117,16 @@ function EditarCaso() {
                                 type="text"
                                 value={caso.descricaoCrime}
                                 onChange={(e) => setCaso({ ...caso, descricaoCrime: e.target.value })}
+                            />
+                        </label>
+                        <br /><br />
+
+                        <label>
+                            Data de Fechamento:
+                            <input
+                                type="date"
+                                value={caso.dataFechamento}
+                                onChange={(e) => setCaso({ ...caso, dataFechamento: e.target.value })}
                             />
                         </label>
                         <br /><br />

@@ -36,7 +36,11 @@ function EditarTestemunha() {
         const fetchTestemunha = async () => {
             try {
                 const response = await axios.get(`/testemunhas/${id}`);
-                setTestemunha(response.data);
+                const testemunhaData = response.data;
+                
+                testemunhaData.dataNascimento = new Date(testemunhaData.dataNascimento).toISOString().split("T")[0];
+                
+                setTestemunha(testemunhaData);
             } catch (error) {
                 console.error("Erro ao buscar a testemunha:", error);
             }

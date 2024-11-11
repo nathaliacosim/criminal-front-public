@@ -35,7 +35,11 @@ function EditarSuspeito() {
         const fetchSuspeito = async () => {
             try {
                 const response = await axios.get(`/suspeitos/${id}`);
-                setSuspeito(response.data);
+                const suspeitoData = response.data;
+                
+                suspeitoData.dataNascimento = new Date(suspeitoData.dataNascimento).toISOString().split("T")[0];
+                
+                setSuspeito(suspeitoData);
             } catch (error) {
                 console.error("Erro ao buscar o suspeito:", error);
             }
@@ -75,7 +79,7 @@ function EditarSuspeito() {
             setLoading(false);
         }
     };
-
+    
     if (!suspeito) return <div>Carregando...</div>;
 
     return (
