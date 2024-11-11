@@ -93,6 +93,21 @@ function Testemunhas() {
         fetchTestemunhas();
     }, []);
 
+    useEffect(() => {
+        if (selectedTestemunha && selectedTestemunha.casoCriminal && !selectedCaso) {
+            const fetchCasoCriminal = async () => {
+                try {
+                    const response = await axios.get<CasoCriminal>(`/caso-criminal/${selectedTestemunha.casoCriminal}`);
+                    setSelectedCaso(response.data);
+                } catch (error) {
+                    setErrorMessage("Erro ao buscar o caso criminal. Tente novamente.");
+                    console.error("Erro ao buscar o caso criminal:", error);
+                }
+            };
+            fetchCasoCriminal();
+        }
+    }, [selectedTestemunha, selectedCaso]);
+
     const handleCadastrarTestemunha = useCallback(() => {
         navigate("/testemunhas/cadastrar");
     }, [navigate]);

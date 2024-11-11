@@ -9,6 +9,7 @@ function NovoDetetive() {
     const [nome, setNome] = useState("");
     const [tipo, setTipo] = useState("");
     const [patente, setPatente] = useState("");
+    const [dataNascimento, setDataNascimento] = useState("");
     const [especialidade, setEspecialidade] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -20,6 +21,7 @@ function NovoDetetive() {
                 nome,
                 tipo,
                 patente,
+                dataNascimento,
                 especialidade,
             });
             navigate("/detetives");
@@ -43,17 +45,17 @@ function NovoDetetive() {
                     </label>
 
                     <label>
+                        Data de Nascimento: <br />
+                        <input type="date" value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} required />
+                    </label>
+
+                    <label>
                         Tipo: <br />
                         <select value={tipo} onChange={(e) => setTipo(e.target.value)} required>
                             <option value="">Selecione o Tipo</option>
                             <option value="Policial">Policial</option>
                             <option value="Particular">Particular</option>
                         </select>
-                    </label>
-
-                    <label>
-                        Patente: <br />
-                        <input value={patente} onChange={(e) => setPatente(e.target.value)} required />
                     </label>
 
                     <label>

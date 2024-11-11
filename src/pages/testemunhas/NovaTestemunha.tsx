@@ -140,12 +140,20 @@ function NovaTestemunha() {
 
                     <label>
                         Relação com a Vítima:
-                        <input
-                            type="text"
+                        <select
                             value={relacaoComVitima}
                             onChange={(e) => setRelacaoComVitima(e.target.value)}
                             required
-                        />
+                        >
+                            <option value="Parente">Parente</option>
+                            <option value="Amigo">Amigo</option>
+                            <option value="Colega de trabalho">Colega de trabalho</option>
+                            <option value="Vizinho">Vizinho</option>
+                            <option value="Parceiro(a) romântico(a)">Parceiro(a) romântico(a)</option>
+                            <option value="Antigo parceiro(a)">Antigo parceiro(a)</option>
+                            <option value="Conhecido">Conhecido</option>
+                            <option value="Desconhecido">Desconhecido</option>
+                        </select>
                     </label>
 
                     <label>
@@ -177,7 +185,7 @@ function NovaTestemunha() {
                     </button>
                 </form>
             </Paper>
-        </div>
+        </div >
     );
 }
 

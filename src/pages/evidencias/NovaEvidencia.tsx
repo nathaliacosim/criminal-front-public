@@ -230,7 +230,7 @@ function NovaEvidencia() {
                     <br /><br />
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Cadastrando..." : "Cadastrar Caso"}
+                        {loading ? "Cadastrando..." : "Cadastrar Evidência"}
                     </button>
                 </form>
             </Paper>

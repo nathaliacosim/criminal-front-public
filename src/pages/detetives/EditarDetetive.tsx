@@ -9,6 +9,7 @@ interface Detetive {
     nome: string;
     tipo: string;
     patente: string;
+    dataNascimento: string;
     especialidade: string;
 }
 
@@ -64,6 +65,16 @@ function EditarDetetive() {
                             type="text"
                             value={detetive.nome}
                             onChange={(e) => setDetetive({ ...detetive, nome: e.target.value })}
+                            required
+                        />
+                    </label>
+
+                    <label>
+                        Data de Nascimento: <br />
+                        <input
+                            type="date"
+                            value={detetive.dataNascimento}
+                            onChange={(e) => setDetetive({ ...detetive, dataNascimento: e.target.value })}
                             required
                         />
                     </label>
