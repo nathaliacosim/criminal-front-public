@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../utils/axios";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
+import axios from "../../utils/axios";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
 import Select from "react-select";
 
 interface Detetive {
@@ -26,9 +26,14 @@ interface Suspeito {
 interface Testemunha {
     _id: string;
     nome: string;
-    relacaoComVitima: string;
-    confiabilidade: string;
+    dataNascimento: string;
+    endereco: string;
     tipoTestemunha: string;
+    alibi: string;
+    relacaoComVitima: string;
+    depoimento: string;
+    confiabilidade: string;
+    casoCriminal: string;
 }
 
 interface Evidencia {
@@ -118,6 +123,8 @@ function NovoSuspeito() {
             <NavigatorLateral />
             <Paper>
                 <form className="form" onSubmit={handleSubmit}>
+                    <h3 className="text-left">Novo Suspeito</h3>
+
                     <label>
                         Nome do Suspeito: <br />
                         <input value={nome} onChange={(e) => setNome(e.target.value)} required />
@@ -180,6 +187,7 @@ function NovoSuspeito() {
                         onChange={handleSelectChange}
                         required
                     />
+                    <br /><br />
 
                     <button type="submit" disabled={loading}>
                         {loading ? "Cadastrando..." : "Cadastrar Caso"}

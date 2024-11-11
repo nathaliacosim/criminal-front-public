@@ -1,56 +1,88 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "../utils/axios";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
+import { useNavigate } from "react-router-dom";
+import axios from "../../utils/axios";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
 import Select from "react-select";
-
-interface CasoCriminal {
-    _id: string;
-    nomeVitima: string;
-    tipoCrime: string;
-    dataAbertura: string;
-}
-
-interface Evidencia {
-    _id: string;
-    casoCriminal: string;
-    tipoEvidencia: string;
-    descricao: string;
-    localizacao: string;
-    quemLocalizou: string;
-    dataEncontro: string;
-    statusEvidencia: string;
-    observacoes: string;
-}
 
 interface Detetive {
     _id: string;
     nome: string;
-    dataNascimento: string;
     tipo: string;
     patente: string;
     especialidade: string;
 }
 
-function EditarEvidencia() {
-    const { id } = useParams<{ id: string }>();
+interface Suspeito {
+    _id: string;
+    nome: string;
+    alibi: string;
+    relacaoComVitima: string;
+    casoCriminal: string;
+    grauSuspeito: string;
+    descricaoFisica: string;
+}
+
+interface Testemunha {
+    _id: string;
+    nome: string;
+    dataNascimento: string;
+    endereco: string;
+    tipoTestemunha: string;
+    alibi: string;
+    relacaoComVitima: string;
+    depoimento: string;
+    confiabilidade: string;
+    casoCriminal: string;
+}
+
+
+interface Evidencia {
+    _id: string;
+    descricao: string;
+    localizacao: string;
+    tipoEvidencia: string;
+    statusEvidencia: string;
+}
+
+interface Entrevista {
+    _id: string;
+    motivoEntrevista: string;
+    entrevistado: string;
+    dataHoraInicio: string;
+    nomeResponsavel: string;
+}
+
+interface CasoCriminal {
+    _id: string;
+    nomeVitima: string;
+    descricaoCrime: string;
+    tipoCrime: string;
+    dataAbertura: string;
+    dataFechamento: string;
+    statusCaso: string;
+    suspeitos: Suspeito[];
+    testemunhas: Testemunha[];
+    detetives: Detetive[];
+    evidencias: Evidencia[];
+    entrevistas: Entrevista[];
+}
+
+function NovaEvidencia() {
     const navigate = useNavigate();
-    const [evidencia, setEvidencia] = useState<Evidencia | null>(null);
-    const [casoCriminal, setCasosCriminais] = useState<CasoCriminal[]>([]);
+    const [tipoEvidencia, setTipoEvidencia] = useState("");
+    const [descricao, setDescricao] = useState("");
+    const [localizacao, setLocalizacao] = useState("");
+    const [dataEncontro, setDataEncontro] = useState("");
+    const [statusEvidencia, setStatusEvidencia] = useState("");
+    const [observacoes, setObservacoes] = useState("");
+    const [casosCriminais, setCasosCriminais] = useState<CasoCriminal[]>([]);
     const [detetives, setDetetives] = useState<Detetive[]>([]);
+    const [selectedCasoCriminal, setSelectedCasoCriminal] = useState<any | null>(null);
+    const [selectedQuemLocalizou, setSelectedQuemLocalizou] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchEvidencia = async () => {
-            try {
-                const response = await axios.get(`/evidencias/${id}`);
-                setEvidencia(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar a evidencia:", error);
-            }
-        };
-
         const fetchCasosCriminais = async () => {
             try {
                 const response = await axios.get("/caso-criminal");
@@ -69,77 +101,69 @@ function EditarEvidencia() {
             }
         };
 
-        fetchEvidencia();
-        fetchDetetives();
         fetchCasosCriminais();
-    }, [id]);
+        fetchDetetives();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.put(`/evidencias/${id}`, {
-                casoCriminal: evidencia?.casoCriminal,
-                tipoEvidencia: evidencia?.tipoEvidencia,
-                descricao: evidencia?.descricao,
-                localizacao: evidencia?.localizacao,
-                quemLocalizou: evidencia?.quemLocalizou,
-                dataEncontro: evidencia?.dataEncontro,
-                statusEvidencia: evidencia?.statusEvidencia,
-                observacoes: evidencia?.observacoes
+            await axios.post("/evidencias", {
+                casoCriminal: selectedCasoCriminal ? selectedCasoCriminal.value : null,
+                tipoEvidencia,
+                descricao,
+                localizacao,
+                quemLocalizou: selectedQuemLocalizou ? selectedQuemLocalizou.value : null,
+                dataEncontro,
+                statusEvidencia,
+                observacoes,
             });
             navigate("/evidencias");
         } catch (error) {
-            console.error("Erro ao atualizar a Evidencia:", error);
+            console.error("Erro ao cadastrar a evidência:", error);
         } finally {
             setLoading(false);
         }
     };
-
-    if (!evidencia) return <div>Carregando...</div>;
 
     return (
         <div className="fullbody">
             <NavigatorLateral />
             <Paper>
                 <form className="form" onSubmit={handleSubmit}>
-                    <h2>Editar Evidência</h2>
+                    <h3 className="text-left">Nova Evidência</h3>
 
                     <label>Caso Criminal:</label>
                     <Select
-                        options={casoCriminal.map((ca) => ({
+                        options={casosCriminais.map((ca) => ({
                             value: ca._id,
-                            label: `${ca.nomeVitima} - ${ca.tipoCrime} [${ca.dataAbertura}]`,
+                            label: `${ca.nomeVitima} - ${ca.tipoCrime} [${ca.dataAbertura}]`
                         }))}
-                        value={{
-                            value: evidencia.casoCriminal,
-                            label: casoCriminal.find((ca) => ca._id === evidencia.casoCriminal)?.nomeVitima,
-                        }}
-                        onChange={(e) => setEvidencia({ ...evidencia, casoCriminal: e ? e.value : "" })}
+                        value={selectedCasoCriminal}
+                        onChange={(option) => setSelectedCasoCriminal(option)}
                         required
                     />
 
                     <label>Quem Localizou:</label>
                     <Select
-                        options={detetives.map((ca) => ({
-                            value: ca._id,
-                            label: `${ca.nome} - ${ca.especialidade}`,
+                        options={detetives.map((det) => ({
+                            value: det._id,
+                            label: `${det.nome} - ${det.especialidade}`,
                         }))}
-                        value={{
-                            value: evidencia.quemLocalizou,
-                            label: detetives.find((ca) => ca._id === evidencia.quemLocalizou)?.nome,
-                        }}
-                        onChange={(e) => setEvidencia({ ...evidencia, quemLocalizou: e ? e.value : "" })}
+                        value={selectedQuemLocalizou}
+                        onChange={(option) => setSelectedQuemLocalizou(option)}
                         required
                     />
 
                     <label>
                         Tipo Evidência:
                         <select
-                            value={evidencia.tipoEvidencia}
-                            onChange={(e) => setEvidencia({ ...evidencia, tipoEvidencia: e.target.value })}
+                            value={tipoEvidencia}
+                            onChange={(e) => setTipoEvidencia(e.target.value)}
                             required
                         >
+                            <option value="" disabled>Selecione o tipo</option>
                             <option value="Arma">Arma</option>
                             <option value="Documento">Documento</option>
                             <option value="Objeto">Objeto</option>
@@ -154,8 +178,8 @@ function EditarEvidencia() {
                         Descrição:
                         <input
                             type="text"
-                            value={evidencia.descricao}
-                            onChange={(e) => setEvidencia({ ...evidencia, descricao: e.target.value })}
+                            value={descricao}
+                            onChange={(e) => setDescricao(e.target.value)}
                             required
                         />
                     </label>
@@ -164,8 +188,8 @@ function EditarEvidencia() {
                         Localização:
                         <input
                             type="text"
-                            value={evidencia.localizacao}
-                            onChange={(e) => setEvidencia({ ...evidencia, localizacao: e.target.value })}
+                            value={localizacao}
+                            onChange={(e) => setLocalizacao(e.target.value)}
                             required
                         />
                     </label>
@@ -174,8 +198,8 @@ function EditarEvidencia() {
                         Data de Registro da Evidência:
                         <input
                             type="date"
-                            value={evidencia.dataEncontro}
-                            onChange={(e) => setEvidencia({ ...evidencia, dataEncontro: e.target.value })}
+                            value={dataEncontro}
+                            onChange={(e) => setDataEncontro(e.target.value)}
                             required
                         />
                     </label>
@@ -183,10 +207,11 @@ function EditarEvidencia() {
                     <label>
                         Status Evidência:
                         <select
-                            value={evidencia.statusEvidencia}
-                            onChange={(e) => setEvidencia({ ...evidencia, statusEvidencia: e.target.value })}
+                            value={statusEvidencia}
+                            onChange={(e) => setStatusEvidencia(e.target.value)}
                             required
                         >
+                            <option value="" disabled>Selecione o status</option>
                             <option value="Boa">Boa</option>
                             <option value="Ruim">Ruim</option>
                             <option value="Inutilizável">Inutilizável</option>
@@ -197,14 +222,15 @@ function EditarEvidencia() {
                         Observação:
                         <input
                             type="text"
-                            value={evidencia.observacoes}
-                            onChange={(e) => setEvidencia({ ...evidencia, observacoes: e.target.value })}
+                            value={observacoes}
+                            onChange={(e) => setObservacoes(e.target.value)}
                             required
                         />
                     </label>
+                    <br /><br />
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Atualizando..." : "Atualizar Evidencia"}
+                        {loading ? "Cadastrando..." : "Cadastrar Caso"}
                     </button>
                 </form>
             </Paper>
@@ -212,4 +238,4 @@ function EditarEvidencia() {
     );
 }
 
-export default EditarEvidencia;
+export default NovaEvidencia;

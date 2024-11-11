@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "../utils/axios";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
+import axios from "../../utils/axios";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
 import Select from "react-select";
 
 interface CasoCriminal {
@@ -12,32 +12,33 @@ interface CasoCriminal {
     dataAbertura: string;
 }
 
-interface Suspeito {
+interface Testemunha {
     _id: string;
     nome: string;
     dataNascimento: string;
     endereco: string;
-    descricaoFisica: string;
+    tipoTestemunha: string;
     alibi: string;
     relacaoComVitima: string;
-    grauSuspeito: string;
+    depoimento: string;
+    confiabilidade: string;
     casoCriminal: string;
 }
 
-function EditarSuspeito() {
+function EditarTestemunha() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [suspeito, setSuspeito] = useState<Suspeito | null>(null);
+    const [testemunha, setTestemunha] = useState<Testemunha | null>(null);
     const [casoCriminal, setCasosCriminais] = useState<CasoCriminal[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const fetchSuspeito = async () => {
+        const fetchTestemunha = async () => {
             try {
-                const response = await axios.get(`/suspeitos/${id}`);
-                setSuspeito(response.data);
+                const response = await axios.get(`/testemunhas/${id}`);
+                setTestemunha(response.data);
             } catch (error) {
-                console.error("Erro ao buscar o suspeito:", error);
+                console.error("Erro ao buscar a testemunha:", error);
             }
         };
 
@@ -50,7 +51,7 @@ function EditarSuspeito() {
             }
         };
 
-        fetchSuspeito();
+        fetchTestemunha();
         fetchCasosCriminais();
     }, [id]);
 
@@ -58,39 +59,40 @@ function EditarSuspeito() {
         e.preventDefault();
         setLoading(true);
         try {
-            await axios.put(`/suspeitos/${id}`, {
-                nome: suspeito?.nome,
-                dataNascimento: suspeito?.dataNascimento,
-                endereco: suspeito?.endereco,
-                descricaoFisica: suspeito?.descricaoFisica,
-                alibi: suspeito?.alibi,
-                relacaoComVitima: suspeito?.relacaoComVitima,
-                grauSuspeito: suspeito?.grauSuspeito,
-                casoCriminal: suspeito?.casoCriminal,
+            await axios.put(`/testemunhas/${id}`, {
+                nome: testemunha?.nome,
+                dataNascimento: testemunha?.dataNascimento,
+                endereco: testemunha?.endereco,
+                tipoTestemunha: testemunha?.tipoTestemunha,
+                alibi: testemunha?.alibi,
+                relacaoComVitima: testemunha?.relacaoComVitima,
+                depoimento: testemunha?.depoimento,
+                confiabilidade: testemunha?.confiabilidade,
+                casoCriminal: testemunha?.casoCriminal,
             });
-            navigate("/suspeitos");
+            navigate("/testemunhas");
         } catch (error) {
-            console.error("Erro ao atualizar o Suspeito:", error);
+            console.error("Erro ao atualizar a Testemunha:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    if (!suspeito) return <div>Carregando...</div>;
+    if (!testemunha) return <div>Carregando...</div>;
 
     return (
         <div className="fullbody">
             <NavigatorLateral />
             <Paper>
                 <form className="form" onSubmit={handleSubmit}>
-                    <h2>Editar Suspeito</h2>
+                    <h3 className="text-left">Editar Testemunha</h3>
 
                     <label>
-                        Nome do Suspeito:
+                        Nome da Testemunha:
                         <input
                             type="text"
-                            value={suspeito.nome}
-                            onChange={(e) => setSuspeito({ ...suspeito, nome: e.target.value })}
+                            value={testemunha.nome}
+                            onChange={(e) => setTestemunha({ ...testemunha, nome: e.target.value })}
                             required
                         />
                     </label>
@@ -99,8 +101,8 @@ function EditarSuspeito() {
                         Data de Nascimento:
                         <input
                             type="date"
-                            value={suspeito.dataNascimento}
-                            onChange={(e) => setSuspeito({ ...suspeito, dataNascimento: e.target.value })}
+                            value={testemunha.dataNascimento}
+                            onChange={(e) => setTestemunha({ ...testemunha, dataNascimento: e.target.value })}
                             required
                         />
                     </label>
@@ -109,28 +111,33 @@ function EditarSuspeito() {
                         Endereço:
                         <input
                             type="text"
-                            value={suspeito.endereco}
-                            onChange={(e) => setSuspeito({ ...suspeito, endereco: e.target.value })}
+                            value={testemunha.endereco}
+                            onChange={(e) => setTestemunha({ ...testemunha, endereco: e.target.value })}
                             required
                         />
                     </label>
 
                     <label>
-                        Descrição Física:
-                        <input
-                            type="text"
-                            value={suspeito.descricaoFisica}
-                            onChange={(e) => setSuspeito({ ...suspeito, descricaoFisica: e.target.value })}
+                        Tipo de Testemunha:
+                        <select
+                            value={testemunha.tipoTestemunha}
+                            onChange={(e) => setTestemunha({ ...testemunha, tipoTestemunha: e.target.value })}
                             required
-                        />
+                        >
+                            <option value="Ocular">Ocular</option>
+                            <option value="Auditiva">Auditiva</option>
+                            <option value="Especialista">Especialista</option>
+                            <option value="Caráter">Caráter</option>
+                            <option value="Circunstancial">Circunstancial</option>
+                        </select>
                     </label>
 
                     <label>
                         Alibi:
                         <input
                             type="text"
-                            value={suspeito.alibi}
-                            onChange={(e) => setSuspeito({ ...suspeito, alibi: e.target.value })}
+                            value={testemunha.alibi}
+                            onChange={(e) => setTestemunha({ ...testemunha, alibi: e.target.value })}
                             required
                         />
                     </label>
@@ -138,8 +145,8 @@ function EditarSuspeito() {
                     <label>
                         Relação com a Vítima:
                         <select
-                            value={suspeito.relacaoComVitima}
-                            onChange={(e) => setSuspeito({ ...suspeito, relacaoComVitima: e.target.value })}
+                            value={testemunha.relacaoComVitima}
+                            onChange={(e) => setTestemunha({ ...testemunha, relacaoComVitima: e.target.value })}
                             required
                         >
                             <option value="Parente">Parente</option>
@@ -154,17 +161,24 @@ function EditarSuspeito() {
                     </label>
 
                     <label>
-                        Grau de Suspeito:
+                        Depoimento:
+                        <textarea
+                            value={testemunha.depoimento}
+                            onChange={(e) => setTestemunha({ ...testemunha, depoimento: e.target.value })}
+                            required
+                        />
+                    </label>
+
+                    <label>
+                        Confiabilidade:
                         <select
-                            value={suspeito.grauSuspeito}
-                            onChange={(e) => setSuspeito({ ...suspeito, grauSuspeito: e.target.value })}
+                            value={testemunha.confiabilidade}
+                            onChange={(e) => setTestemunha({ ...testemunha, confiabilidade: e.target.value })}
                             required
                         >
-                            <option value="Primário">Primário</option>
-                            <option value="Secundário">Secundário</option>
-                            <option value="Terciário">Terciário</option>
-                            <option value="Cúmplice">Cúmplice</option>
-                            <option value="Pessoa de interesse">Pessoa de interesse</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Média">Média</option>
+                            <option value="Baixa">Baixa</option>
                         </select>
                     </label>
 
@@ -175,15 +189,15 @@ function EditarSuspeito() {
                             label: `${ca.nomeVitima} - ${ca.tipoCrime} [${ca.dataAbertura}]`,
                         }))}
                         value={{
-                            value: suspeito.casoCriminal,
-                            label: casoCriminal.find((ca) => ca._id === suspeito.casoCriminal)?.nomeVitima,
+                            value: testemunha.casoCriminal,
+                            label: casoCriminal.find((ca) => ca._id === testemunha.casoCriminal)?.nomeVitima,
                         }}
-                        onChange={(e) => setSuspeito({ ...suspeito, casoCriminal: e ? e.value : "" })}
+                        onChange={(e) => setTestemunha({ ...testemunha, casoCriminal: e ? e.value : "" })}
                         required
                     />
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Atualizando..." : "Atualizar Suspeito"}
+                        {loading ? "Atualizando..." : "Atualizar Testemunha"}
                     </button>
                 </form>
             </Paper>
@@ -191,4 +205,4 @@ function EditarSuspeito() {
     );
 }
 
-export default EditarSuspeito;
+export default EditarTestemunha;

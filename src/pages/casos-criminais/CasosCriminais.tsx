@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
-import axios from "../utils/axios";
+import { useEffect, useState, useCallback } from "react";
+import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import "./Ajustes.css";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
-import Modal from "../components/ModalCaso";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
+import Modal from "../../components/ModalCaso";
 
 interface Detetive {
   _id: string;
@@ -28,10 +27,16 @@ interface Suspeito {
 interface Testemunha {
   _id: string;
   nome: string;
-  relacaoComVitima: string;
-  confiabilidade: string;
+  dataNascimento: string;
+  endereco: string;
   tipoTestemunha: string;
+  alibi: string;
+  relacaoComVitima: string;
+  depoimento: string;
+  confiabilidade: string;
+  casoCriminal: string;
 }
+
 
 interface Evidencia {
   _id: string;

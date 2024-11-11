@@ -1,18 +1,23 @@
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import CasosCriminais from "./pages/CasosCriminais";
-import NovoCasoCriminal from "./pages/NovoCasoCriminal";
-import Suspeitos from "./pages/Suspeitos";
-import Testemunhas from "./pages/Testemunhas";
-import Detetives from "./pages/Detetives";
-import Entrevistas from "./pages/Entrevistas";
-import Evidencias from "./pages/Evidencias";
-import EditarCaso from "./pages/EditarCaso";
-import NovoSuspeito from "./pages/NovoSuspeito";
-import EditarSuspeito from "./pages/EditarSuspeito";
-import EditarEvidencia from "./pages/EditarEvidencia";
-import NovaEvidencia from "./pages/NovaEvidencia";
+import CasosCriminais from "./pages/casos-criminais/CasosCriminais";
+import NovoCasoCriminal from "./pages/casos-criminais/NovoCasoCriminal";
+import EditarCaso from "./pages/casos-criminais/EditarCaso";
+import Suspeitos from "./pages/suspeitos/Suspeitos";
+import NovoSuspeito from "./pages/suspeitos/NovoSuspeito";
+import EditarSuspeito from "./pages/suspeitos/EditarSuspeito";
+import Testemunhas from "./pages/testemunhas/Testemunhas";
+import NovaTestemunha from "./pages/testemunhas/NovaTestemunha";
+import EditarTestemunha from "./pages/testemunhas/EditarTestemunha";
+import Detetives from "./pages/detetives/Detetives";
+import NovoDetetive from "./pages/detetives/NovoDetetive";
+import EditarDetetive from "./pages/detetives/EditarDetetive";
+import Evidencias from "./pages/evidencias/Evidencias";
+import NovaEvidencia from "./pages/evidencias/NovaEvidencia";
+import EditarEvidencia from "./pages/evidencias/EditarEvidencia";
+import Entrevistas from "./pages/entrevistas/Entrevistas";
+import NovaEntrevista from "./pages/entrevistas/NovaEntrevista";
+import EditarEntrevista from "./pages/entrevistas/EditalEntrevista";
 
 function App() {
   return (
@@ -33,10 +38,16 @@ function App() {
           <Route path="/evidencias/editar/:id" element={<EditarEvidencia />} />
 
           <Route path="/testemunhas" element={<Testemunhas />} />
+          <Route path="/testemunhas/cadastrar" element={<NovaTestemunha />} />
+          <Route path="/testemunhas/editar/:id" element={<EditarTestemunha />} />
 
           <Route path="/detetives" element={<Detetives />} />
+          <Route path="/detetives/cadastrar" element={<NovoDetetive />} />
+          <Route path="/detetives/editar/:id" element={<EditarDetetive />} />
 
           <Route path="/entrevistas" element={<Entrevistas />} />
+          <Route path="/entrevistas/cadastrar" element={<NovaEntrevista />} />
+          <Route path="/entrevistas/editar/:id" element={<EditarEntrevista />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Select from 'react-select';
-import axios from "../utils/axios";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
+import axios from "../../utils/axios";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
 
 interface CasoCriminal {
     _id: string;
@@ -93,8 +93,7 @@ function EditarCaso() {
             <NavigatorLateral />
             <Paper>
                 <div className="left-content">
-                    <h2>Editar Caso Criminal</h2>
-                    <br />
+                    <h3 className="text-left">Editar Caso Criminal</h3>
                     <form onSubmit={(e) => e.preventDefault()}>
                         <label>
                             Nome Completo da Vítima:

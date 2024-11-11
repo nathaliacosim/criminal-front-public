@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
-import ModalSuspeito from "../components/ModalSuspeito";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
+import ModalTestemunhas from "../../components/ModalTestemunha";
 
 interface Detetive {
     _id: string;
@@ -26,10 +26,16 @@ interface Suspeito {
 interface Testemunha {
     _id: string;
     nome: string;
-    relacaoComVitima: string;
-    confiabilidade: string;
+    dataNascimento: string;
+    endereco: string;
     tipoTestemunha: string;
+    alibi: string;
+    relacaoComVitima: string;
+    depoimento: string;
+    confiabilidade: string;
+    casoCriminal: string;
 }
+
 
 interface Evidencia {
     _id: string;
@@ -62,72 +68,57 @@ interface CasoCriminal {
     entrevistas: Entrevista[];
 }
 
-function Suspeitos() {
-    const [suspeitos, setSuspeitos] = useState<Suspeito[]>([]);
+function Testemunhas() {
     const [loading, setLoading] = useState<boolean>(false);
-    const [selectedSuspeito, setSelectedSuspeito] = useState<Suspeito | null>(null);
+    const [testemunhas, setTestemunhas] = useState<Testemunha[]>([]);
+    const [selectedTestemunha, setSelectedTestemunha] = useState<Testemunha | null>(null);
     const [selectedCaso, setSelectedCaso] = useState<CasoCriminal | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchSuspeitos = async () => {
+        const fetchTestemunhas = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get<Suspeito[]>("/suspeitos");
-                setSuspeitos(response.data);
+                const response = await axios.get<Testemunha[]>("/testemunhas");
+                setTestemunhas(response.data);
             } catch (error) {
-                setErrorMessage("Erro ao carregar suspeitos. Tente novamente.");
-                console.error("Erro ao buscar os suspeitos:", error);
+                setErrorMessage("Erro ao carregar testemunhas. Tente novamente.");
+                console.error("Erro ao buscar as testemunhas:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchSuspeitos();
+        fetchTestemunhas();
     }, []);
 
-    useEffect(() => {
-        if (selectedSuspeito && selectedSuspeito.casoCriminal && !selectedCaso) {
-            const fetchCasoCriminal = async () => {
-                try {
-                    const response = await axios.get<CasoCriminal>(`/caso-criminal/${selectedSuspeito.casoCriminal}`);
-                    setSelectedCaso(response.data);
-                } catch (error) {
-                    setErrorMessage("Erro ao buscar o caso criminal. Tente novamente.");
-                    console.error("Erro ao buscar o caso criminal:", error);
-                }
-            };
-            fetchCasoCriminal();
-        }
-    }, [selectedSuspeito, selectedCaso]);
-
-    const handleCadastrarSuspeito = useCallback(() => {
-        navigate("/suspeitos/cadastrar");
+    const handleCadastrarTestemunha = useCallback(() => {
+        navigate("/testemunhas/cadastrar");
     }, [navigate]);
 
-    const handleCardClick = useCallback((suspeito: Suspeito) => {
-        setSelectedSuspeito(suspeito);
+    const handleCardClick = useCallback((testemunha: Testemunha) => {
+        setSelectedTestemunha(testemunha);
         setModalOpen(true);
     }, []);
 
     const handleModalClose = useCallback(() => {
         setModalOpen(false);
-        setSelectedCaso(null); // Resetar o caso selecionado ao fechar o modal
+        setSelectedCaso(null);
     }, []);
 
     const handleEdit = useCallback((id: string) => {
-        navigate(`/suspeitos/editar/${id}`);
+        navigate(`/testemunhas/editar/${id}`);
     }, [navigate]);
 
     const handleDelete = useCallback(async (id: string) => {
         try {
-            await axios.delete(`/suspeitos/${id}`);
-            setSuspeitos(prevSuspeitos => prevSuspeitos.filter(suspeito => suspeito._id !== id));
+            await axios.delete(`/testemunhas/${id}`);
+            setTestemunhas(prevTestemunhas => prevTestemunhas.filter(ts => ts._id !== id));
             handleModalClose();
         } catch (error) {
-            setErrorMessage("Erro ao excluir o suspeito. Tente novamente.");
-            console.error("Erro ao excluir o suspeito:", error);
+            setErrorMessage("Erro ao excluir a testemunha. Tente novamente.");
+            console.error("Erro ao excluir a testemunha:", error);
         }
     }, [handleModalClose]);
 
@@ -136,35 +127,35 @@ function Suspeitos() {
             <NavigatorLateral />
             <Paper>
                 <div className="left-content">
-                    <h2>Suspeitos</h2>
+                    <h2>Testemunhas</h2>
                     <br />
                     <button
                         className="btn-1 b-dark-orange f-white"
-                        onClick={handleCadastrarSuspeito}
+                        onClick={handleCadastrarTestemunha}
                     >
-                        + Suspeito
+                        + Testemunha
                     </button>
 
                     {loading ? (
-                        <p>Carregando suspeitos...</p>
+                        <p>Carregando testemunhas...</p>
                     ) : (
                         <div className="container-cards">
-                            {suspeitos.map((suspeito) => (
+                            {testemunhas.map((testemunha) => (
                                 <div
                                     className="quiz-card"
-                                    key={suspeito._id}
-                                    onClick={() => handleCardClick(suspeito)}
+                                    key={testemunha._id}
+                                    onClick={() => handleCardClick(testemunha)}
                                 >
                                     <div className="quiz-card-header">
                                         <span className="quiz-card-category">
-                                            {suspeito.nome || "Nome desconhecido"}
+                                            {testemunha.tipoTestemunha || "Tipo não encontrado."}
                                         </span>
                                     </div>
                                     <div className="quiz-card-body">
                                         <p className="quiz-card-question subtitle">
-                                            <b>Relação com a Vítima:</b> {suspeito.relacaoComVitima}
+                                            <b>Nome:</b> {testemunha.nome}
                                             <br />
-                                            <b>Descrição Física:</b> {suspeito.descricaoFisica}
+                                            <b>Confiabilidade:</b> {testemunha.confiabilidade}
                                         </p>
                                     </div>
                                 </div>
@@ -175,10 +166,10 @@ function Suspeitos() {
                 </div>
             </Paper>
 
-            {selectedSuspeito && (
-                <ModalSuspeito
+            {selectedTestemunha && (
+                <ModalTestemunhas
                     isOpen={modalOpen}
-                    suspeito={selectedSuspeito}
+                    testemunha={selectedTestemunha}
                     casoCriminal={selectedCaso}
                     onClose={handleModalClose}
                     onEdit={handleEdit}
@@ -189,4 +180,4 @@ function Suspeitos() {
     );
 }
 
-export default Suspeitos;
+export default Testemunhas;

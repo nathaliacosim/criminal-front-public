@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
-import NavigatorLateral from "../components/NavigatorLateral";
-import Paper from "../components/Paper";
-import ModalEvidencias from "../components/ModalEvidencia";
+import NavigatorLateral from "../../components/NavigatorLateral";
+import Paper from "../../components/Paper";
+import ModalSuspeito from "../../components/ModalSuspeito";
 
 interface Detetive {
     _id: string;
@@ -26,10 +26,16 @@ interface Suspeito {
 interface Testemunha {
     _id: string;
     nome: string;
-    relacaoComVitima: string;
-    confiabilidade: string;
+    dataNascimento: string;
+    endereco: string;
     tipoTestemunha: string;
+    alibi: string;
+    relacaoComVitima: string;
+    depoimento: string;
+    confiabilidade: string;
+    casoCriminal: string;
 }
+
 
 interface Evidencia {
     _id: string;
@@ -37,8 +43,6 @@ interface Evidencia {
     localizacao: string;
     tipoEvidencia: string;
     statusEvidencia: string;
-    casoCriminal: string;
-    dataEncontro: string;
 }
 
 interface Entrevista {
@@ -64,36 +68,36 @@ interface CasoCriminal {
     entrevistas: Entrevista[];
 }
 
-function Evidencias() {
+function Suspeitos() {
+    const [suspeitos, setSuspeitos] = useState<Suspeito[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const [evidencias, setEvidencias] = useState<Evidencia[]>([]);
-    const [selectedEvidencia, setSelectedEvidencia] = useState<Evidencia | null>(null);
+    const [selectedSuspeito, setSelectedSuspeito] = useState<Suspeito | null>(null);
     const [selectedCaso, setSelectedCaso] = useState<CasoCriminal | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchEvidencias = async () => {
+        const fetchSuspeitos = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get<Evidencia[]>("/evidencias");
-                setEvidencias(response.data);
+                const response = await axios.get<Suspeito[]>("/suspeitos");
+                setSuspeitos(response.data);
             } catch (error) {
-                setErrorMessage("Erro ao carregar evidencias. Tente novamente.");
-                console.error("Erro ao buscar os evidencias:", error);
+                setErrorMessage("Erro ao carregar suspeitos. Tente novamente.");
+                console.error("Erro ao buscar os suspeitos:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchEvidencias();
+        fetchSuspeitos();
     }, []);
 
     useEffect(() => {
-        if (selectedEvidencia && selectedEvidencia.casoCriminal && !selectedCaso) {
+        if (selectedSuspeito && selectedSuspeito.casoCriminal && !selectedCaso) {
             const fetchCasoCriminal = async () => {
                 try {
-                    const response = await axios.get<CasoCriminal>(`/caso-criminal/${selectedEvidencia.casoCriminal}`);
+                    const response = await axios.get<CasoCriminal>(`/caso-criminal/${selectedSuspeito.casoCriminal}`);
                     setSelectedCaso(response.data);
                 } catch (error) {
                     setErrorMessage("Erro ao buscar o caso criminal. Tente novamente.");
@@ -102,34 +106,34 @@ function Evidencias() {
             };
             fetchCasoCriminal();
         }
-    }, [selectedEvidencia, selectedCaso]);
+    }, [selectedSuspeito, selectedCaso]);
 
-    const handleCadastrarEvidencia = useCallback(() => {
-        navigate("/evidencias/cadastrar");
+    const handleCadastrarSuspeito = useCallback(() => {
+        navigate("/suspeitos/cadastrar");
     }, [navigate]);
 
-    const handleCardClick = useCallback((evidencia: Evidencia) => {
-        setSelectedEvidencia(evidencia);
+    const handleCardClick = useCallback((suspeito: Suspeito) => {
+        setSelectedSuspeito(suspeito);
         setModalOpen(true);
     }, []);
 
     const handleModalClose = useCallback(() => {
         setModalOpen(false);
-        setSelectedCaso(null);
+        setSelectedCaso(null); // Resetar o caso selecionado ao fechar o modal
     }, []);
 
     const handleEdit = useCallback((id: string) => {
-        navigate(`/evidencias/editar/${id}`);
+        navigate(`/suspeitos/editar/${id}`);
     }, [navigate]);
 
     const handleDelete = useCallback(async (id: string) => {
         try {
-            await axios.delete(`/evidencias/${id}`);
-            setEvidencias(prevEvidencias => prevEvidencias.filter(ev => ev._id !== id));
+            await axios.delete(`/suspeitos/${id}`);
+            setSuspeitos(prevSuspeitos => prevSuspeitos.filter(suspeito => suspeito._id !== id));
             handleModalClose();
         } catch (error) {
-            setErrorMessage("Erro ao excluir o evidencias. Tente novamente.");
-            console.error("Erro ao excluir o evidencias:", error);
+            setErrorMessage("Erro ao excluir o suspeito. Tente novamente.");
+            console.error("Erro ao excluir o suspeito:", error);
         }
     }, [handleModalClose]);
 
@@ -138,35 +142,35 @@ function Evidencias() {
             <NavigatorLateral />
             <Paper>
                 <div className="left-content">
-                    <h2>Evidências</h2>
+                    <h2>Suspeitos</h2>
                     <br />
                     <button
                         className="btn-1 b-dark-orange f-white"
-                        onClick={handleCadastrarEvidencia}
+                        onClick={handleCadastrarSuspeito}
                     >
-                        + Evidencia
+                        + Suspeito
                     </button>
 
                     {loading ? (
-                        <p>Carregando evidencias...</p>
+                        <p>Carregando suspeitos...</p>
                     ) : (
                         <div className="container-cards">
-                            {evidencias.map((evidencia) => (
+                            {suspeitos.map((suspeito) => (
                                 <div
                                     className="quiz-card"
-                                    key={evidencia._id}
-                                    onClick={() => handleCardClick(evidencia)}
+                                    key={suspeito._id}
+                                    onClick={() => handleCardClick(suspeito)}
                                 >
                                     <div className="quiz-card-header">
                                         <span className="quiz-card-category">
-                                            {evidencia.tipoEvidencia || "Tipo não encontrado."}
+                                            {suspeito.nome || "Nome desconhecido"}
                                         </span>
                                     </div>
                                     <div className="quiz-card-body">
                                         <p className="quiz-card-question subtitle">
-                                            <b>Descrição:</b> {evidencia.descricao}
+                                            <b>Relação com a Vítima:</b> {suspeito.relacaoComVitima}
                                             <br />
-                                            <b>Localizada:</b> {evidencia.localizacao}
+                                            <b>Descrição Física:</b> {suspeito.descricaoFisica}
                                         </p>
                                     </div>
                                 </div>
@@ -177,10 +181,10 @@ function Evidencias() {
                 </div>
             </Paper>
 
-            {selectedEvidencia && (
-                <ModalEvidencias
+            {selectedSuspeito && (
+                <ModalSuspeito
                     isOpen={modalOpen}
-                    evidencia={selectedEvidencia}
+                    suspeito={selectedSuspeito}
                     casoCriminal={selectedCaso}
                     onClose={handleModalClose}
                     onEdit={handleEdit}
@@ -191,4 +195,4 @@ function Evidencias() {
     );
 }
 
-export default Evidencias;
+export default Suspeitos;
