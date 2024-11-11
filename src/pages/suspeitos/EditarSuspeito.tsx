@@ -6,193 +6,216 @@ import Paper from "../../components/Paper";
 import Select from "react-select";
 
 interface CasoCriminal {
-    _id: string;
-    nomeVitima: string;
-    tipoCrime: string;
-    dataAbertura: string;
+  _id: string;
+  nomeVitima: string;
+  tipoCrime: string;
+  dataAbertura: string;
 }
 
 interface Suspeito {
-    _id: string;
-    nome: string;
-    dataNascimento: string;
-    endereco: string;
-    descricaoFisica: string;
-    alibi: string;
-    relacaoComVitima: string;
-    grauSuspeito: string;
-    casoCriminal: string;
+  _id: string;
+  nome: string;
+  dataNascimento: string;
+  endereco: string;
+  descricaoFisica: string;
+  alibi: string;
+  relacaoComVitima: string;
+  grauSuspeito: string;
+  casoCriminal: string;
 }
 
 function EditarSuspeito() {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const [suspeito, setSuspeito] = useState<Suspeito | null>(null);
-    const [casoCriminal, setCasosCriminais] = useState<CasoCriminal[]>([]);
-    const [loading, setLoading] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [suspeito, setSuspeito] = useState<Suspeito | null>(null);
+  const [casoCriminal, setCasosCriminais] = useState<CasoCriminal[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchSuspeito = async () => {
-            try {
-                const response = await axios.get(`/suspeitos/${id}`);
-                const suspeitoData = response.data;
-                
-                suspeitoData.dataNascimento = new Date(suspeitoData.dataNascimento).toISOString().split("T")[0];
-                
-                setSuspeito(suspeitoData);
-            } catch (error) {
-                console.error("Erro ao buscar o suspeito:", error);
-            }
-        };
+  useEffect(() => {
+    const fetchSuspeito = async () => {
+      try {
+        const response = await axios.get(`/suspeitos/${id}`);
+        const suspeitoData = response.data;
 
-        const fetchCasosCriminais = async () => {
-            try {
-                const response = await axios.get("/caso-criminal");
-                setCasosCriminais(response.data);
-            } catch (error) {
-                console.error("Erro ao buscar os casos criminais:", error);
-            }
-        };
+        suspeitoData.dataNascimento = new Date(suspeitoData.dataNascimento)
+          .toISOString()
+          .split("T")[0];
 
-        fetchSuspeito();
-        fetchCasosCriminais();
-    }, [id]);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            await axios.put(`/suspeitos/${id}`, {
-                nome: suspeito?.nome,
-                dataNascimento: suspeito?.dataNascimento,
-                endereco: suspeito?.endereco,
-                descricaoFisica: suspeito?.descricaoFisica,
-                alibi: suspeito?.alibi,
-                relacaoComVitima: suspeito?.relacaoComVitima,
-                grauSuspeito: suspeito?.grauSuspeito,
-                casoCriminal: suspeito?.casoCriminal,
-            });
-            navigate("/suspeitos");
-        } catch (error) {
-            console.error("Erro ao atualizar o Suspeito:", error);
-        } finally {
-            setLoading(false);
-        }
+        setSuspeito(suspeitoData);
+      } catch (error) {
+        console.error("Erro ao buscar o suspeito:", error);
+      }
     };
-    
-    if (!suspeito) return <div>Carregando...</div>;
 
-    return (
-        <div className="fullbody">
-            <NavigatorLateral />
-            <Paper>
-                <form className="form" onSubmit={handleSubmit}>
-                    <h3 className="text-left">Editar Suspeito</h3>
+    const fetchCasosCriminais = async () => {
+      try {
+        const response = await axios.get("/caso-criminal");
+        setCasosCriminais(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar os casos criminais:", error);
+      }
+    };
 
-                    <label>
-                        Nome do Suspeito:
-                        <input
-                            type="text"
-                            value={suspeito.nome}
-                            onChange={(e) => setSuspeito({ ...suspeito, nome: e.target.value })}
-                            required
-                        />
-                    </label>
+    fetchSuspeito();
+    fetchCasosCriminais();
+  }, [id]);
 
-                    <label>
-                        Data de Nascimento:
-                        <input
-                            type="date"
-                            value={suspeito.dataNascimento}
-                            onChange={(e) => setSuspeito({ ...suspeito, dataNascimento: e.target.value })}
-                            required
-                        />
-                    </label>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.put(`/suspeitos/${id}`, {
+        nome: suspeito?.nome,
+        dataNascimento: suspeito?.dataNascimento,
+        endereco: suspeito?.endereco,
+        descricaoFisica: suspeito?.descricaoFisica,
+        alibi: suspeito?.alibi,
+        relacaoComVitima: suspeito?.relacaoComVitima,
+        grauSuspeito: suspeito?.grauSuspeito,
+        casoCriminal: suspeito?.casoCriminal,
+      });
+      navigate("/suspeitos");
+    } catch (error) {
+      console.error("Erro ao atualizar o Suspeito:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                    <label>
-                        Endereço:
-                        <input
-                            type="text"
-                            value={suspeito.endereco}
-                            onChange={(e) => setSuspeito({ ...suspeito, endereco: e.target.value })}
-                            required
-                        />
-                    </label>
+  if (!suspeito) return <div>Carregando...</div>;
 
-                    <label>
-                        Descrição Física:
-                        <input
-                            type="text"
-                            value={suspeito.descricaoFisica}
-                            onChange={(e) => setSuspeito({ ...suspeito, descricaoFisica: e.target.value })}
-                            required
-                        />
-                    </label>
+  return (
+    <div className="fullbody">
+      <NavigatorLateral />
+      <Paper>
+        <form className="form" onSubmit={handleSubmit}>
+          <h3 className="text-left">Editar Suspeito</h3>
 
-                    <label>
-                        Alibi:
-                        <input
-                            type="text"
-                            value={suspeito.alibi}
-                            onChange={(e) => setSuspeito({ ...suspeito, alibi: e.target.value })}
-                            required
-                        />
-                    </label>
+          <label>
+            Nome do Suspeito:
+            <input
+              type="text"
+              value={suspeito.nome}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, nome: e.target.value })
+              }
+              required
+            />
+          </label>
 
-                    <label>
-                        Relação com a Vítima:
-                        <select
-                            value={suspeito.relacaoComVitima}
-                            onChange={(e) => setSuspeito({ ...suspeito, relacaoComVitima: e.target.value })}
-                            required
-                        >
-                            <option value="Parente">Parente</option>
-                            <option value="Amigo">Amigo</option>
-                            <option value="Colega de trabalho">Colega de trabalho</option>
-                            <option value="Vizinho">Vizinho</option>
-                            <option value="Parceiro(a) romântico(a)">Parceiro(a) romântico(a)</option>
-                            <option value="Antigo parceiro(a)">Antigo parceiro(a)</option>
-                            <option value="Conhecido">Conhecido</option>
-                            <option value="Desconhecido">Desconhecido</option>
-                        </select>
-                    </label>
+          <label>
+            Data de Nascimento:
+            <input
+              type="date"
+              value={suspeito.dataNascimento}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, dataNascimento: e.target.value })
+              }
+              required
+            />
+          </label>
 
-                    <label>
-                        Grau de Suspeito:
-                        <select
-                            value={suspeito.grauSuspeito}
-                            onChange={(e) => setSuspeito({ ...suspeito, grauSuspeito: e.target.value })}
-                            required
-                        >
-                            <option value="Primário">Primário</option>
-                            <option value="Secundário">Secundário</option>
-                            <option value="Terciário">Terciário</option>
-                            <option value="Cúmplice">Cúmplice</option>
-                            <option value="Pessoa de interesse">Pessoa de interesse</option>
-                        </select>
-                    </label>
+          <label>
+            Endereço:
+            <input
+              type="text"
+              value={suspeito.endereco}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, endereco: e.target.value })
+              }
+              required
+            />
+          </label>
 
-                    <label>Caso Criminal:</label>
-                    <Select
-                        options={casoCriminal.map((ca) => ({
-                            value: ca._id,
-                            label: `${ca.nomeVitima} - ${ca.tipoCrime} [${ca.dataAbertura}]`,
-                        }))}
-                        value={{
-                            value: suspeito.casoCriminal,
-                            label: casoCriminal.find((ca) => ca._id === suspeito.casoCriminal)?.nomeVitima,
-                        }}
-                        onChange={(e) => setSuspeito({ ...suspeito, casoCriminal: e ? e.value : "" })}
-                        required
-                    />
+          <label>
+            Descrição Física:
+            <input
+              type="text"
+              value={suspeito.descricaoFisica}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, descricaoFisica: e.target.value })
+              }
+              required
+            />
+          </label>
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Atualizando..." : "Atualizar Suspeito"}
-                    </button>
-                </form>
-            </Paper>
-        </div>
-    );
+          <label>
+            Alibi:
+            <input
+              type="text"
+              value={suspeito.alibi}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, alibi: e.target.value })
+              }
+              required
+            />
+          </label>
+
+          <label>
+            Relação com a Vítima:
+            <select
+              value={suspeito.relacaoComVitima}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, relacaoComVitima: e.target.value })
+              }
+              required
+            >
+              <option value="Parente">Parente</option>
+              <option value="Amigo">Amigo</option>
+              <option value="Colega de trabalho">Colega de trabalho</option>
+              <option value="Vizinho">Vizinho</option>
+              <option value="Parceiro(a) romântico(a)">
+                Parceiro(a) romântico(a)
+              </option>
+              <option value="Antigo parceiro(a)">Antigo parceiro(a)</option>
+              <option value="Conhecido">Conhecido</option>
+              <option value="Desconhecido">Desconhecido</option>
+            </select>
+          </label>
+
+          <label>
+            Grau de Suspeito:
+            <select
+              value={suspeito.grauSuspeito}
+              onChange={(e) =>
+                setSuspeito({ ...suspeito, grauSuspeito: e.target.value })
+              }
+              required
+            >
+              <option value="Primário">Primário</option>
+              <option value="Secundário">Secundário</option>
+              <option value="Terciário">Terciário</option>
+              <option value="Cúmplice">Cúmplice</option>
+              <option value="Pessoa de interesse">Pessoa de interesse</option>
+            </select>
+          </label>
+
+          <label>Caso Criminal:</label>
+          <Select
+            options={casoCriminal.map((ca) => ({
+              value: ca._id,
+              label: `${ca.nomeVitima} - ${ca.tipoCrime} [${ca.dataAbertura}]`,
+            }))}
+            value={{
+              value: suspeito.casoCriminal,
+              label: casoCriminal.find((ca) => ca._id === suspeito.casoCriminal)
+                ?.nomeVitima,
+            }}
+            onChange={(e) =>
+              setSuspeito({ ...suspeito, casoCriminal: e ? e.value : "" })
+            }
+            required
+          />
+          <br />
+          <br />
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Atualizando..." : "Atualizar Suspeito"}
+          </button>
+        </form>
+      </Paper>
+    </div>
+  );
 }
 
 export default EditarSuspeito;
